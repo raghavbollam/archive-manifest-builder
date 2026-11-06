@@ -1,0 +1,10 @@
+{
+    "fixture_directory": "basic-tree",
+    "include_patterns": [
+        "**/*.txt",
+        "src/**"
+    ],
+    "exclude_patterns": [
+        "**/*.tmp"
+    ]
+}

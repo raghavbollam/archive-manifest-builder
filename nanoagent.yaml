@@ -1,0 +1,47 @@
+_ > nanoagent.plugin.v0001.ManifestConfig:
+id: archive-manifest-builder
+name: Archive Manifest Builder
+version: 0.1.0
+status: ready
+spec: nanoagent.plugin/v0001
+
+runtime > nanoagent.plugin.v0001.RuntimeConfig:
+  type: mcp_stdio
+  command: [uv, run, --frozen, python, -m, plugin]
+
+permissions > nanoagent.plugin.v0001.PermissionsConfig:
+  network > nanoagent.plugin.v0001.NetworkConfig:
+    hosts: []
+  filesystem > nanoagent.plugin.v0001.FilesystemConfig:
+    write: [workspace]
+
+tools > dict[contract.Tool, nanoagent.plugin.v0001.ToolConfig]:
+  read_archive_request:
+    description: Read the archive request and inspect every available regular file.
+  write_manifest:
+    description: Save the final deterministic archive manifest.
+
+tasks > dict[contract.Task, nanoagent.plugin.v0001.TaskConfig]:
+  build-archive-manifest:
+    description: Apply documented include and exclude globs to a fixture directory and report each selected file's path, byte size, and SHA-256 hash.
+    runner: agent
+    tools: [read_archive_request, write_manifest]
+    reference: null
+    instructions: |-
+      First call read_archive_request. It returns the requested fixture
+      directory, include patterns, exclude patterns, and metadata for every
+      available regular file.
+
+      Paths are relative to the fixture directory and use '/' separators.
+      Patterns match complete paths. '*' matches any characters except '/',
+      '?' matches one character except '/', and '**' matches across directory
+      boundaries. A '**/' prefix may also match zero directories.
+
+      A file is selected when the include list is empty or at least one include
+      pattern matches it. Remove every selected file that matches an exclude
+      pattern; excludes always win.
+
+      Return each remaining file exactly once with the path, byte size, and
+      lowercase SHA-256 value supplied by read_archive_request. Sort entries
+      by path in ascending lexical order. Then call write_manifest with the
+      complete result.

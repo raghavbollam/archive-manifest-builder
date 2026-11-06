@@ -1,0 +1,15 @@
+_ > nanoagent.plugin.v0001.ProductConfig:
+tagline: "Build a deterministic size-and-SHA-256 manifest for selected files"
+
+summary: "Given a fixture directory and documented include and exclude globs, the agent selects regular files and returns a canonical manifest containing each relative path, byte size, and SHA-256 digest. A deterministic verifier independently walks the directory and recomputes the complete result."
+
+highlights:
+  - "Offline and reproducible: all fixture files are supplied inside the task workspace"
+  - "Simple documented path globs with deterministic include and exclude precedence"
+  - "Raw byte sizes and lowercase SHA-256 hashes for every selected regular file"
+  - "Independent all-or-nothing verification with precise mismatch diagnostics"
+
+steps:
+  - "Provide a fixture directory plus optional include and exclude path patterns"
+  - "The agent selects matching files and orders them by normalized relative path"
+  - "Review the canonical path, byte size, and SHA-256 manifest"
